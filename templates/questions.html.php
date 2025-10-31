@@ -1,3 +1,5 @@
+<p><?=$totalQuestion?> Question have been submitted to the Student Forum</p>
+
 <?php foreach ($questions as $question): ?>
   <blockquote>
     <?php if (!empty($question['img'])): ?>
@@ -7,6 +9,7 @@
     <?php endif; ?>
 
     <p><?= htmlspecialchars($question['text'], ENT_QUOTES, 'UTF-8') ?></p>
+    <br /><?= htmlspecialchars($question['moduleName'], ENT_QUOTES, 'UTF-8') ?>
 
     (by <a href="mailto:<?= htmlspecialchars($question['email'], ENT_QUOTES, 'UTF-8') ?>">
       <?= htmlspecialchars($question['name'], ENT_QUOTES, 'UTF-8') ?></a>)

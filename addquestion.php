@@ -19,11 +19,13 @@ if (isset($_POST['text'])) {
                 $imageFileName = null;
             }
         }
-        $sql = 'INSERT INTO question (text, date, img, userid)
-                VALUES (:text, CURDATE(), :img, userid = 1)';
+        $sql = 'INSERT INTO question (text, date, img, userid, moduleid)
+                VALUES (:text, CURDATE(), :img, :userid, :moduleid)';
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':text', $_POST['text']);
         $stmt->bindValue(':img', $imageFileName);
+        $stmt->bindValue(':userid', $_POST['userid']);
+        $stmt->bindValue(':moduleid', $_POST['moduleid']);
         $stmt->execute();
 
         header('location: questions.php');
@@ -34,6 +36,11 @@ if (isset($_POST['text'])) {
     }
 } else {
     $title = 'Add a new Question';
+    include 'includes/DatabaseConnection.php';
+    $sql_a = 'SELECT id, moduleName FROM module';
+    $modules = $pdo->query($sql_a);
+    $sql_b = 'SELECT id, name FROM user';
+    $users = $pdo->query($sql_b);
     ob_start();
     include 'templates/addquestion.html.php';
     $output = ob_get_clean();
