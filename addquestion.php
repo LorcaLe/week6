@@ -2,7 +2,7 @@
 if (isset($_POST['text'])) {
     try {
         include 'includes/DatabaseConnection.php';
-
+        include 'includes/DatabaseFunction.php';
         $imageFileName = null;
 
         if (!empty($_FILES['image']['name'])) {
@@ -19,14 +19,7 @@ if (isset($_POST['text'])) {
                 $imageFileName = null;
             }
         }
-        $sql = 'INSERT INTO question (text, date, img, userid, moduleid)
-                VALUES (:text, CURDATE(), :img, :userid, :moduleid)';
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindValue(':text', $_POST['text']);
-        $stmt->bindValue(':img', $imageFileName);
-        $stmt->bindValue(':userid', $_POST['userid']);
-        $stmt->bindValue(':moduleid', $_POST['moduleid']);
-        $stmt->execute();
+        insertQuestion($pdo, $_POST['text'], $_POST['moduleid'], $_POST['userid'], $imageFileName);
 
         header('location: questions.php');
         exit;
@@ -35,12 +28,11 @@ if (isset($_POST['text'])) {
         $output = 'Database error: ' . $e->getMessage();
     }
 } else {
-    $title = 'Add a new Question';
     include 'includes/DatabaseConnection.php';
-    $sql_a = 'SELECT id, moduleName FROM module';
-    $modules = $pdo->query($sql_a);
-    $sql_b = 'SELECT id, name FROM user';
-    $users = $pdo->query($sql_b);
+    include 'includes/DatabaseFunction.php';
+    $title = 'Add a new Question';
+    $modules = allModules($pdo);
+    $users = allUsers($pdo);
     ob_start();
     include 'templates/addquestion.html.php';
     $output = ob_get_clean();

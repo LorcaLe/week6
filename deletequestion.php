@@ -1,11 +1,9 @@
 <?php
 try {
     include 'includes/DatabaseConnection.php';
-
-    $stmt = $pdo->prepare('SELECT img FROM question WHERE id = :id');
-    $stmt->bindValue(':id', $_POST['id']);
-    $stmt->execute();
-    $question = $stmt->fetch();
+    include 'includes/DatabaseFunction.php';
+    
+    $question = getQuestionImg($pdo, $_POST['id']);
 
     if ($question && !empty($question['img'])) {
         $imagePath = 'images/' . $question['img'];
@@ -14,9 +12,7 @@ try {
         }
     }
 
-    $stmt = $pdo->prepare('DELETE FROM question WHERE id = :id');
-    $stmt->bindValue(':id', $_POST['id']);
-    $stmt->execute();
+    deleteQuestion($pdo, $_POST['id']);
 
     header('location: questions.php');
     exit;
